@@ -1,0 +1,34 @@
+{
+  "name": "herita-demo-website",
+  "version": "1.0.0",
+  "description": "Demo website for Herita Platform ESG blockchain functionality",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx serve .",
+    "update-contract": "node update-contract-address.js",
+    "build": "echo 'Demo website is static - no build needed'",
+    "test": "echo 'Open http://localhost:8000 in browser to test'"
+  },
+  "keywords": [
+    "blockchain",
+    "esg",
+    "nft",
+    "heritage",
+    "demo",
+    "web3"
+  ],
+  "author": "Herita Platform",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.0.0"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/herita"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

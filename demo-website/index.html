@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herita Platform - ESG Blockchain Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-blue-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold">🏛️ Herita Platform</h1>
+                    <span class="ml-2 text-sm bg-blue-700 px-2 py-1 rounded">Demo</span>
+                </div>
+                <div class="flex space-x-4">
+                    <button id="connectWallet" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-sm">
+                        Connect Wallet
+                    </button>
+                    <div id="walletStatus" class="flex items-center text-sm">
+                        <span id="connectionStatus">Not Connected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                ESG Blockchain for Cultural Heritage
+            </h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Increase your company's ESG score by sponsoring cultural heritage projects and receive blockchain-verified NFT certifications.
+            </p>
+        </div>
+
+        <!-- Use Case Navigation -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow" onclick="showUseCase('register')">
+                <div class="text-blue-600 text-2xl mb-4">🏢</div>
+                <h3 class="text-lg font-semibold mb-2">UC01: Register Business</h3>
+                <p class="text-gray-600 text-sm">Register your business information to join the Herita ecosystem</p>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow" onclick="showUseCase('evaluate')">
+                <div class="text-green-600 text-2xl mb-4">📊</div>
+                <h3 class="text-lg font-semibold mb-2">UC02: Evaluate & Score</h3>
+                <p class="text-gray-600 text-sm">Provide financial data and get your HeritaScore assessment</p>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow" onclick="showUseCase('suggestions')">
+                <div class="text-purple-600 text-2xl mb-4">🤖</div>
+                <h3 class="text-lg font-semibold mb-2">UC03: AI Project Suggestions</h3>
+                <p class="text-gray-600 text-sm">Get AI-powered heritage project recommendations</p>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow" onclick="showUseCase('sponsor')">
+                <div class="text-orange-600 text-2xl mb-4">💰</div>
+                <h3 class="text-lg font-semibold mb-2">UC04: Sponsor Project</h3>
+                <p class="text-gray-600 text-sm">Select and donate to cultural heritage projects</p>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow" onclick="showUseCase('mint')">
+                <div class="text-indigo-600 text-2xl mb-4">🎖️</div>
+                <h3 class="text-lg font-semibold mb-2">UC05: Mint ESG NFT</h3>
+                <p class="text-gray-600 text-sm">Receive blockchain-verified ESG contribution certificates</p>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow" onclick="showUseCase('verify')">
+                <div class="text-red-600 text-2xl mb-4">🔍</div>
+                <h3 class="text-lg font-semibold mb-2">UC06: Verify NFT</h3>
+                <p class="text-gray-600 text-sm">Banks can validate ESG NFTs using business ID or hash</p>
+            </div>
+        </div>
+
+        <!-- Use Case Sections -->
+        <div id="useCaseContainer" class="bg-white rounded-lg shadow-lg p-8 min-h-96">
+            <!-- Default Welcome Screen -->
+            <div id="welcome" class="text-center py-16">
+                <div class="text-6xl mb-6">🏛️</div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Welcome to Herita Platform Demo</h2>
+                <p class="text-xl text-gray-600 mb-8">Select a use case above to see how businesses can increase their ESG score through cultural heritage sponsorship</p>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-2xl mx-auto">
+                    <h3 class="font-semibold text-blue-900 mb-2">Demo Features:</h3>
+                    <ul class="text-left text-blue-800 space-y-1">
+                        <li>✅ Business registration and scoring</li>
+                        <li>✅ AI-powered project recommendations</li>
+                        <li>✅ Heritage project sponsorship</li>
+                        <li>✅ ESG NFT minting on testnet blockchain</li>
+                        <li>✅ Bank verification system</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- UC01: Register Business -->
+            <div id="register" class="hidden">
+                <h2 class="text-2xl font-bold mb-6 text-blue-900">🏢 UC01: Business Registration</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <form id="businessForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Business Name *</label>
+                                <input type="text" id="businessName" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Enter company name" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Business ID *</label>
+                                <input type="text" id="businessId" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="e.g., COMP001" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+                                <select id="industry" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option>Technology</option>
+                                    <option>Finance</option>
+                                    <option>Manufacturing</option>
+                                    <option>Healthcare</option>
+                                    <option>Retail</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Company Size</label>
+                                <select id="companySize" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option>Startup (1-10 employees)</option>
+                                    <option>Small (11-50 employees)</option>
+                                    <option>Medium (51-250 employees)</option>
+                                    <option>Large (251-1000 employees)</option>
+                                    <option>Enterprise (1000+ employees)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Wallet Address</label>
+                                <input type="text" id="walletAddress" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Will be auto-filled when wallet connected" readonly>
+                            </div>
+                            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+                                Register Business
+                            </button>
+                        </form>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold mb-4">Registration Benefits</h3>
+                        <ul class="space-y-2 text-sm text-gray-700">
+                            <li>✅ Access to heritage project marketplace</li>
+                            <li>✅ ESG score tracking and improvement</li>
+                            <li>✅ Blockchain-verified certifications</li>
+                            <li>✅ AI-powered project recommendations</li>
+                            <li>✅ Transparent impact reporting</li>
+                        </ul>
+                        <div id="registrationResult" class="mt-4 hidden">
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                                <strong>Success!</strong> Business registered successfully.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UC02: Evaluate & Score -->
+            <div id="evaluate" class="hidden">
+                <h2 class="text-2xl font-bold mb-6 text-green-900">📊 UC02: Business Evaluation & HeritaScore</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <form id="evaluationForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Annual Revenue (USD)</label>
+                                <input type="number" id="revenue" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="1000000">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Current ESG Initiatives</label>
+                                <select id="esgInitiatives" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="0">None</option>
+                                    <option value="1">Minimal (1-2 programs)</option>
+                                    <option value="2">Moderate (3-5 programs)</option>
+                                    <option value="3">Extensive (6+ programs)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Sustainability Budget (% of revenue)</label>
+                                <input type="number" id="sustainabilityBudget" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="2.5" step="0.1">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Cultural Heritage Interest Level</label>
+                                <select id="heritageInterest" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="1">Low</option>
+                                    <option value="2">Medium</option>
+                                    <option value="3">High</option>
+                                    <option value="4">Very High</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">
+                                Calculate HeritaScore
+                            </button>
+                        </form>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold mb-4">HeritaScore Calculator</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Our algorithm evaluates your company's potential for cultural heritage ESG impact based on financial capacity, current initiatives, and cultural interest.
+                        </p>
+                        <div id="scoreResult" class="hidden">
+                            <div class="text-center mb-4">
+                                <div id="scoreDisplay" class="text-4xl font-bold text-green-600 mb-2">--</div>
+                                <div class="text-sm text-gray-600">HeritaScore (0-100)</div>
+                            </div>
+                            <div id="scoreBreakdown" class="space-y-2 text-sm">
+                                <!-- Score breakdown will be populated by JS -->
+                            </div>
+                            <div class="mt-4 p-3 bg-blue-50 rounded">
+                                <div class="text-sm font-medium text-blue-900">Recommended Actions:</div>
+                                <div id="recommendations" class="text-sm text-blue-800 mt-1">
+                                    <!-- Recommendations will be populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UC03: AI Project Suggestions -->
+            <div id="suggestions" class="hidden">
+                <h2 class="text-2xl font-bold mb-6 text-purple-900">🤖 UC03: AI Co-pilot for Project Suggestions</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <form id="suggestionsForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Budget Range (USD)</label>
+                                <select id="budgetRange" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="5000">$1,000 - $5,000</option>
+                                    <option value="10000">$5,001 - $10,000</option>
+                                    <option value="25000">$10,001 - $25,000</option>
+                                    <option value="50000">$25,001 - $50,000</option>
+                                    <option value="100000">$50,001 - $100,000</option>
+                                    <option value="250000">$100,001+</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Geographic Preference</label>
+                                <select id="geography" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option>Local (Same Country)</option>
+                                    <option>Regional (Same Continent)</option>
+                                    <option>Global (Worldwide)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Project Type Preference</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="project-type" value="monuments" class="mr-2">
+                                        <span class="ml-2">Historic Monuments</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="project-type" value="museums" class="mr-2">
+                                        <span class="ml-2">Museums & Galleries</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="project-type" value="archaeology" class="mr-2">
+                                        <span class="ml-2">Archaeological Sites</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="project-type" value="traditions" class="mr-2">
+                                        <span class="ml-2">Cultural Traditions</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700">
+                                Get AI Recommendations
+                            </button>
+                        </form>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold mb-4">🤖 AI-Powered Matching</h3>
+                        <div id="projectSuggestions" class="space-y-4 hidden">
+                            <!-- AI suggestions will be populated here -->
+                        </div>
+                        <div id="loadingSuggestions" class="hidden text-center py-8">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                            <p class="text-gray-600">AI analyzing your preferences...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UC04: Sponsor Project -->
+            <div id="sponsor" class="hidden">
+                <h2 class="text-2xl font-bold mb-6 text-orange-900">💰 UC04: Sponsor Heritage Project</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <div id="selectedProject" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 hidden">
+                            <h4 class="font-semibold text-blue-900 mb-2">Selected Project:</h4>
+                            <div id="projectDetails" class="text-blue-800">
+                                <!-- Selected project details -->
+                            </div>
+                        </div>
+                        
+                        <form id="sponsorshipForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Select Project</label>
+                                <select id="projectSelect" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Choose a project...</option>
+                                    <option value="PROJ001">Restore Ancient Roman Theatre - Italy ($15,000)</option>
+                                    <option value="PROJ002">Maya Temple Conservation - Guatemala ($25,000)</option>
+                                    <option value="PROJ003">Medieval Castle Preservation - Scotland ($40,000)</option>
+                                    <option value="PROJ004">Traditional Craft Center - Japan ($8,000)</option>
+                                    <option value="PROJ005">Archaeological Museum Upgrade - Egypt ($35,000)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Sponsorship Amount (ETH)</label>
+                                <input type="number" id="sponsorAmount" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="0.01" step="0.001" min="0.001">
+                                <div class="text-xs text-gray-500 mt-1">Minimum: 0.001 ETH (Testnet)</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Your Enterprise ID</label>
+                                <input type="text" id="enterpriseId" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="From business registration">
+                            </div>
+                            <button type="submit" class="w-full bg-orange-600 text-white py-2 rounded-md hover:bg-orange-700">
+                                Sponsor Project
+                            </button>
+                        </form>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold mb-4">Sponsorship Benefits</h3>
+                        <ul class="space-y-2 text-sm text-gray-700 mb-6">
+                            <li>🎖️ ESG NFT Certificate</li>
+                            <li>📊 Improved ESG Score</li>
+                            <li>🔗 Blockchain Verification</li>
+                            <li>📱 Public Impact Recognition</li>
+                            <li>🏛️ Cultural Heritage Support</li>
+                        </ul>
+                        
+                        <div id="sponsorshipResult" class="hidden">
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                                <strong>Success!</strong> Sponsorship transaction initiated.
+                            </div>
+                            <div id="transactionDetails" class="text-sm text-gray-600">
+                                <!-- Transaction details will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UC05: Mint ESG NFT -->
+            <div id="mint" class="hidden">
+                <h2 class="text-2xl font-bold mb-6 text-indigo-900">🎖️ UC05: Mint ESG NFT Certificate</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <form id="mintForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Recipient Address</label>
+                                <input type="text" id="recipientAddress" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="0x..." readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Enterprise ID</label>
+                                <input type="text" id="mintEnterpriseId" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="COMP001">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Project ID</label>
+                                <input type="text" id="mintProjectId" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="PROJ001">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Sponsorship Amount (Wei)</label>
+                                <input type="number" id="mintAmount" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="1000000000000000">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ESG Score (0-100)</label>
+                                <input type="number" id="mintEsgScore" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="75" min="0" max="100">
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700">
+                                Mint ESG NFT
+                            </button>
+                        </form>
+                        
+                        <div id="mintingResult" class="mt-6 hidden">
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                                <strong>NFT Minted Successfully!</strong>
+                            </div>
+                            <div id="nftDetails" class="bg-white border rounded p-4">
+                                <!-- NFT details will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold mb-4">ESG NFT Certificate</h3>
+                        <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                            <div class="text-4xl mb-4">🎖️</div>
+                            <h4 class="font-semibold text-gray-900 mb-2">HERITA ESG CERTIFICATION</h4>
+                            <p class="text-sm text-gray-600 mb-4">Blockchain-verified cultural heritage contribution certificate</p>
+                            <div class="space-y-2 text-xs text-left">
+                                <div><span class="font-medium">Token Standard:</span> ERC-721</div>
+                                <div><span class="font-medium">Network:</span> Lisk Sepolia Testnet</div>
+                                <div><span class="font-medium">Symbol:</span> HESG</div>
+                                <div><span class="font-medium">Transferable:</span> Yes</div>
+                                <div><span class="font-medium">Verifiable:</span> On-chain</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-sm text-gray-600">
+                            <h4 class="font-medium mb-2">Certificate Contains:</h4>
+                            <ul class="space-y-1">
+                                <li>• Enterprise identification</li>
+                                <li>• Project details and impact</li>
+                                <li>• Sponsorship amount</li>
+                                <li>• ESG score assessment</li>
+                                <li>• Timestamp and verification status</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UC06: Verify NFT -->
+            <div id="verify" class="hidden">
+                <h2 class="text-2xl font-bold mb-6 text-red-900">🔍 UC06: HeritaBank NFT Verification</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                            <h4 class="font-semibold text-red-900 mb-2">🏦 Bank Verification Portal</h4>
+                            <p class="text-red-800 text-sm">Financial institutions can verify ESG NFT authenticity and details</p>
+                        </div>
+                        
+                        <form id="verificationForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Verification Method</label>
+                                <select id="verificationMethod" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="enterpriseId">By Enterprise ID</option>
+                                    <option value="tokenId">By Token ID</option>
+                                    <option value="walletAddress">By Wallet Address</option>
+                                </select>
+                            </div>
+                            
+                            <div id="enterpriseIdInput">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Enterprise ID</label>
+                                <input type="text" id="verifyEnterpriseId" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="COMP001">
+                            </div>
+                            
+                            <div id="tokenIdInput" class="hidden">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Token ID</label>
+                                <input type="number" id="verifyTokenId" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="1">
+                            </div>
+                            
+                            <div id="walletAddressInput" class="hidden">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Wallet Address</label>
+                                <input type="text" id="verifyWalletAddress" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="0x...">
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700">
+                                Verify ESG NFT
+                            </button>
+                        </form>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold mb-4">Verification Results</h3>
+                        <div id="verificationResults" class="hidden">
+                            <!-- Verification results will be populated here -->
+                        </div>
+                        <div id="noResults" class="text-center py-8 text-gray-500">
+                            Enter information and click "Verify ESG NFT" to see results
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-lg font-semibold mb-2">Herita Platform Demo</h3>
+            <p class="text-gray-400 mb-4">Connecting businesses with cultural heritage through blockchain-verified ESG contributions</p>
+            <div class="flex justify-center space-x-6 text-sm text-gray-400">
+                <span>🔗 Lisk Sepolia Testnet</span>
+                <span>📜 Smart Contract Verified</span>
+                <span>🎯 Demo Environment</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/web3-config.js"></script>
+    <script src="js/contract-abi.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
